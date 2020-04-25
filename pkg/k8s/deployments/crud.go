@@ -79,6 +79,7 @@ func GetRevisionAnnotatedDeploymentOrFailed(dev *model.Dev, c *kubernetes.Client
 	for _, c := range d.Status.Conditions {
 		if c.Type == appsv1.DeploymentReplicaFailure && c.Reason == "FailedCreate" && c.Status == apiv1.ConditionTrue {
 			if strings.Contains(c.Message, "exceeded quota") {
+				log.Infof("quota exceeded: %s", c.Message)
 				return nil, errors.ErrQuota
 			}
 			return nil, fmt.Errorf(c.Message)
